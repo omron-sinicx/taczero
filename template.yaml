@@ -1,0 +1,81 @@
+theme: default
+organization: TacZero
+twitter: null
+title: 'TacZero: Training-Free Peg Insertion Using a General-Purpose Vision-Language Model with Tactile Feedback'
+conference: null
+resources:
+  paper: taczero.pdf
+  arxiv: null
+  poster: null
+  code: null
+  video: null
+  blog: null
+  demo: null
+  huggingface: null
+description: 'A general-purpose vision-language model interprets visual and tactile observations and selects robot actions without additional tactile or manipulation training.'
+image: https://omron-sinicx.github.io/taczero/teaser.png
+url: https://omron-sinicx.github.io/taczero/
+speakerdeck: null
+authors:
+  - name: Kazutoshi Tanaka
+    affiliation: []
+    url: https://kazutoshi-tanaka.github.io/pages/index_eng.html
+contact_ids: null
+affiliations: []
+meta: null
+bibtex: null
+header:
+  bg_curve: null
+teaser: teaser.png
+overview: |
+  TacZero uses a pretrained general-purpose vision-language model (VLM) to interpret visual and tactile observations and select robot actions without additional tactile or manipulation training or task-specific rules for contact interpretation or action selection.
+
+  The VLM receives camera images, robot state, three-axis tactile responses, and the within-trial interaction history. Tactile responses are represented as numerical values or vectors overlaid on camera images. From these observations, the VLM generates commands specifying target end-effector positions and gripper opening or closing, which a low-level controller executes.
+body:
+  - title: How TacZero works
+    text: |
+      <img src="method.png" alt="TacZero observation and action loop" />
+
+      At each step, the VLM receives the task instruction, a camera image, tactile responses, robot state, and the interaction history from the same trial. Robot state includes the end-effector pose, joint and gripper encoder counts, and motor currents; camera calibration and coordinate transformations relate image observations to the robot reference frame.
+
+      The VLM specifies the next absolute end-effector target position in XYZ coordinates, a gripper command, and a short observation and reason. A low-level controller executes the command, then fresh observations and execution results are supplied for the next decision. The history retains observations, commands, notes, and results from the current trial; no previous-trial history or human outcome labels are supplied.
+
+      **Training-free scope.** The pretrained VLM is used without additional tactile or manipulation training or hand-designed task-specific rules for contact interpretation or action selection. Before VLM control begins, a fixed preparation sequence grasps and lifts the peg, and the experimenter confirms the grasp. During insertion, the controller holds a fixed downward end-effector orientation and caps translation speed at 20 mm/s.
+  - title: Tactile input
+    text: |
+      A uSkin sensor mounted on one gripper finger measures XYZ responses at 16 taxels. A baseline is computed from 30 unloaded frames before each trial and kept fixed. The baseline-corrected responses are summed across the taxels and expressed in sensor counts, rather than calibrated force units.
+
+      **TacZero-Numbers** supplies all three aggregate components as numerical text alongside the unmodified RGB image. **TacZero-Overlay** displays the same responses as red, green, and blue arrows for the sensor X, Y, and Z axes, projected onto the camera image. Projection and arrow clipping can reduce directional and magnitude information; the numerical representation preserves the three aggregate components without projection or clipping.
+  - title: Experimental results
+    text: |
+      We compare three input conditions in **20 independent cylindrical-peg insertion trials per condition**, using GPT-6 Astra at medium reasoning effort. The robot-state inputs, translation controller, execution limits, and within-trial image-history scheme are shared across conditions.
+
+      | Input condition | Successful trials | Success rate | No entry | Jamming after entry | Grasp slippage |
+      | --- | --- | --- | --- | --- | --- |
+      | No tactile input | 10 / 20 | 50% | 2 | 6 | 2 |
+      | TacZero-Numbers | 15 / 20 | 75% | 2 | 3 | 0 |
+      | TacZero-Overlay | 11 / 20 | 55% | 3 | 6 | 0 |
+
+      Success and failure categories are **judged by the experimenter through visual inspection**, independently of the VLM's completion report. Success requires the peg's lower end to be near the bottom of the specified hole. The three failure categories are mutually exclusive.
+
+      TacZero-Numbers had the highest observed success rate and fewer jamming failures in this comparison. The results suggest that tactile input can improve insertion performance, with its benefit depending on the representation used in this setup.
+
+      Additional TacZero-Numbers experiments achieved **5 / 10 successful rectangular-prism insertions with Astra (50%)** and **2 / 10 cylindrical-peg insertions with Claude Fable 5.1 at high reasoning effort (20%)**. These are separate shape and model evaluations.
+  - title: A successful insertion
+    text: |
+      <figure>
+        <img src="snap.png" alt="Six selected observations from successful TacZero-Numbers trial 3: entrance contact, retraction, realignment, entry, insertion, and completion report" />
+        <figcaption class="uk-text-meta uk-margin-small-top">Successful TacZero-Numbers trial 3: (a) entrance contact, (b) retraction, (c) realignment, (d) entry, (e) insertion, and (f) completion report. The panels show selected observations from the trial.</figcaption>
+      </figure>
+
+      After approaching the hole, the VLM described stalled downward motion and an increased vertical tactile response in its note. It interpreted these observations as entrance contact and selected an upward target to retract. It then adjusted the target in XY above the opening, noting clearance and a reduced tactile response.
+
+      After a later entry attempt, the VLM selected lower targets, citing visible insertion progress and the absence of an increased vertical tactile response. It subsequently used smaller downward increments and reported completion, interpreting little visible depth change together with an increased vertical tactile response as bottom contact. These contact descriptions are the VLM's interpretations recorded in its notes; the trial's success was judged separately by the experimenter.
+  - title: Failure modes and limitations
+    text: |
+      Failed trials included **no hole entry**, **jamming after entry**, and **peg slippage relative to the gripper fingers**. In some failed trials, the VLM reported that the peg had reached the bottom even though the experimenter judged it to have jammed before reaching the required depth. Other attempts ended with the VLM explicitly stating that insertion remained incomplete.
+
+      The single camera viewpoint leaves some alignment and contact conditions visually ambiguous. The VLM's notes frequently referred to vertical tactile responses but seldom to horizontal responses, even in trials judged to have jammed. The advantage of numerical input observed here may therefore not extend to other viewpoints or coordinate descriptions.
+
+      The fixed end-effector orientation limits available corrections, and the instruction to maintain the grasp prevents regrasping after slippage. Each action is followed by an API wait, so tactile changes cannot trigger immediate VLM-directed motion adjustments during execution or while waiting. In the cylindrical TacZero-Numbers trials, mean API waiting time was 239 s per trial, compared with 110 s of action execution. Broader motion capabilities, improved goal communication, and faster feedback are directions for future work.
+projects: null
