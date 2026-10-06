@@ -7,7 +7,6 @@ import Overview from '@/components/overview.jsx';
 import Video from '@/components/video.jsx';
 import Body from '@/components/body.jsx';
 import Contact from '@/components/contact.jsx';
-import Footer from '@/components/footer.jsx';
 import Citation from '@/components/citation.jsx';
 import SpeakerDeck from '@/components/speakerdeck.jsx';
 import Projects from '@/components/projects.jsx';
@@ -74,7 +73,6 @@ class Template extends React.Component {
           {data.bibtex && <Citation bibtex={data.bibtex} />}
           <Projects projects={data.projects} />
         </div>
-        <Footer />
       </div>
     );
   }
