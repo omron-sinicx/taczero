@@ -62,7 +62,7 @@ class Template extends React.Component {
             teaser={data.teaser}
             description={data.description}
           />
-          <Video video={data.resources.video} />
+          <Video video={data.video_embed} />
           <SpeakerDeck dataId={data.speakerdeck} />
           <Body body={data.body} />
           <Contact

@@ -8,7 +8,7 @@ resources:
   arxiv: null
   poster: null
   code: null
-  video: https://www.youtube.com/embed/XH0oR3yyMNA
+  video: https://www.youtube.com/watch?v=XH0oR3yyMNA
   blog: null
   demo: null
   huggingface: null
@@ -16,6 +16,7 @@ description: 'A general-purpose vision-language model interprets visual and tact
 image: https://omron-sinicx.github.io/taczero/teaser.png
 url: https://omron-sinicx.github.io/taczero/
 speakerdeck: null
+video_embed: https://www.youtube.com/embed/XH0oR3yyMNA
 authors:
   - name: Kazutoshi Tanaka
     affiliation: []
