@@ -4,7 +4,7 @@ twitter: null
 title: 'TacZero: Training-Free Peg Insertion Using a General-Purpose Vision-Language Model with Tactile Feedback'
 conference: null
 resources:
-  paper: taczero.pdf
+  paper: https://arxiv.org/abs/2610.07621
   arxiv: null
   poster: null
   code: null
